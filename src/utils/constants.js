@@ -8,6 +8,10 @@ export const APPLICATION_STATUS = [
   { value: 'Withdrawn', label: 'Withdrawn' }
 ];
 
+export const STATUS_FLOW = ['Applied', 'Interview', 'Technical Test', 'Offer'];
+
+export const TERMINAL_STATUSES = ['Accepted', 'Rejected', 'Withdrawn'];
+
 export const JOB_TYPES = [
   'Full-time',
   'Part-time',

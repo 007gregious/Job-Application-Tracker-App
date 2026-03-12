@@ -20,6 +20,9 @@ export const validateApplication = (formData) => {
   if (formData.jobUrl && !isValidUrl(formData.jobUrl)) {
     errors.jobUrl = 'Invalid URL format';
   }
+  if (formData.status === 'Rejected' && !formData.rejectionReason?.trim()) {
+    errors.rejectionReason = 'Rejection reason is required for feedback tracking';
+  }
 
   return errors;
 };
