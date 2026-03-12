@@ -20,7 +20,8 @@ const ApplicationForm = ({ onSuccess, applicationToEdit }) => {
     contactPerson: applicationToEdit?.contactPerson || '',
     contactEmail: applicationToEdit?.contactEmail || '',
     jobUrl: applicationToEdit?.jobUrl || '',
-    notes: applicationToEdit?.notes || ''
+    notes: applicationToEdit?.notes || '',
+    rejectionReason: applicationToEdit?.rejectionReason || ''
   });
   
   const [errors, setErrors] = useState({});
@@ -174,6 +175,19 @@ const ApplicationForm = ({ onSuccess, applicationToEdit }) => {
           onChange={handleChange}
           placeholder="Add any additional notes about the application..."
         />
+
+        {formData.status === 'Rejected' && (
+          <Input
+            type="textarea"
+            label="Rejection Reason"
+            name="rejectionReason"
+            value={formData.rejectionReason}
+            onChange={handleChange}
+            required
+            error={errors.rejectionReason}
+            placeholder="Capture why the process ended in rejection"
+          />
+        )}
 
         <div className="form-actions">
           <Button type="submit" variant="primary">
