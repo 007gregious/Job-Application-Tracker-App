@@ -1,1 +1,19 @@
-node_modules
+# dependencies
+node_modules/
+package-lock.json
+
+# builds
+build/
+
+# environment files
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
