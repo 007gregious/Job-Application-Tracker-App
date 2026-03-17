@@ -1,7 +1,8 @@
 import React from 'react';
 import { FaBriefcase } from 'react-icons/fa';
+import Button from './Button';
 
-const Header = () => {
+const Header = ({ currentUser, onSignOut }) => {
   return (
     <header className="header">
       <div className="header-content">
@@ -10,6 +11,13 @@ const Header = () => {
           <h1>JobTrackr</h1>
         </div>
         <p className="tagline">Your Personal Job Application Tracker</p>
+
+        {currentUser && (
+          <div className="header-auth">
+            <span>Signed in as <strong>{currentUser.name}</strong></span>
+            <Button variant="secondary" onClick={onSignOut}>Sign Out</Button>
+          </div>
+        )}
       </div>
     </header>
   );
