@@ -3,17 +3,18 @@ require('dotenv').config();
 
 let pool;
 
-// Different configurations for different environments
 if (process.env.NODE_ENV === 'production') {
-  // Production: Use Render's PostgreSQL URL
+  // Production: Use Render's PostgreSQL
+  console.log('í³Š Connecting to Render PostgreSQL...');
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-      rejectUnauthorized: false // Required for Render
+      rejectUnauthorized: false
     }
   });
 } else {
-  // Development: Use local PostgreSQL or environment variables
+  // Development: Use local PostgreSQL
+  console.log('í³Š Connecting to local PostgreSQL...');
   pool = new Pool({
     user: process.env.DB_USER || 'postgres',
     host: process.env.DB_HOST || 'localhost',
@@ -23,12 +24,12 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Test the database connection
+// Test connection
 pool.connect((err, client, release) => {
   if (err) {
-    console.error('Error connecting to database:', err.stack);
+    console.error('âŒ Database connection error:', err.message);
   } else {
-    console.log('âœ… Connected to database successfully');
+    console.log('âœ… Database connected successfully');
     release();
   }
 });
