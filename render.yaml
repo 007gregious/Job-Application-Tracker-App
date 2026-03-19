@@ -5,26 +5,20 @@ services:
     runtime: node
     plan: free
     region: oregon
-    
-    # Build and start commands
     buildCommand: npm install && npm run build
     startCommand: npm start
-    
-    # Environment variables
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
       - key: DATABASE_URL
         fromDatabase:
           name: jobtrackr-db
           property: connectionString
 
+databases:
   # PostgreSQL database
-  - type: postgres
-    name: jobtrackr-db
+  - name: jobtrackr-db
     plan: free
     region: oregon
     databaseName: jobtrackr
-    ipAllowList: [] # Allow only from internal services
+    ipAllowList: []
