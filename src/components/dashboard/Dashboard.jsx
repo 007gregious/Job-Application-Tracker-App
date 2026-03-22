@@ -2,10 +2,11 @@ import React from 'react';
 import { useApplications } from '../../hooks/useApplications';
 import StatsCard from './StatsCard';
 import RecentApplications from './RecentApplications';
+import AnalyticsChart from './AnalyticsChart';
 import { FaFileAlt, FaCheckCircle, FaClock, FaTimesCircle } from 'react-icons/fa';
 
-const Dashboard = () => {
-  const { applications } = useApplications();
+const Dashboard = ({ userId }) => {
+  const { applications, loading } = useApplications(userId);
 
   const stats = {
     total: applications.length,
@@ -14,6 +15,10 @@ const Dashboard = () => {
     rejected: applications.filter(app => app.status === 'Rejected').length,
     accepted: applications.filter(app => app.status === 'Accepted').length
   };
+
+  if (loading) {
+    return <div className="loading">Loading dashboard...</div>;
+  }
 
   return (
     <div className="dashboard">
@@ -45,6 +50,9 @@ const Dashboard = () => {
           color="red"
         />
       </div>
+
+      {/* New Analytics Chart Section */}
+      <AnalyticsChart applications={applications} />
 
       <RecentApplications applications={applications.slice(0, 5)} />
     </div>

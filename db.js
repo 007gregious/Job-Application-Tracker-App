@@ -1,40 +1,39 @@
-const { Pool } = require('pg');
 require('dotenv').config();
 
-let pool;
+let db;
 
+// In production (Render), use PostgreSQL
 if (process.env.NODE_ENV === 'production') {
-  // Production: Use Render's PostgreSQL
   console.log('í³Š Connecting to Render PostgreSQL...');
-  pool = new Pool({
+  const { Pool } = require('pg');
+  
+  db = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
       rejectUnauthorized: false
     }
   });
-} else {
-  // Development: Use local PostgreSQL
-  console.log('í³Š Connecting to local PostgreSQL...');
-  pool = new Pool({
-    user: process.env.DB_USER || 'postgres',
-    host: process.env.DB_HOST || 'localhost',
-    database: process.env.DB_NAME || 'jobtrackr',
-    password: process.env.DB_PASSWORD || 'postgres',
-    port: process.env.DB_PORT || 5432,
+  
+  // Test connection
+  db.connect((err, client, release) => {
+    if (err) {
+      console.error('âŒ Database connection error:', err.message);
+    } else {
+      console.log('âœ… Database connected successfully');
+      release();
+    }
   });
+  
+  // Wrap with query method
+  const originalDb = db;
+  db = {
+    query: (text, params) => originalDb.query(text, params),
+    pool: originalDb
+  };
+} else {
+  // In development, use in-memory database
+  console.log('í²¾ Using in-memory database for development');
+  db = require('./db-memory');
 }
 
-// Test connection
-pool.connect((err, client, release) => {
-  if (err) {
-    console.error('âŒ Database connection error:', err.message);
-  } else {
-    console.log('âœ… Database connected successfully');
-    release();
-  }
-});
-
-module.exports = {
-  query: (text, params) => pool.query(text, params),
-  pool
-};
+module.exports = db;

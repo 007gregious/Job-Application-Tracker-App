@@ -824,3 +824,47 @@ body {
 .auth-card form .btn {
   margin-top: var(--spacing-sm);
 }
+
+/* Analytics Charts */
+.analytics-charts {
+  margin-top: var(--spacing-xl);
+}
+
+.analytics-empty {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  color: var(--gray-500);
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+
+.chart-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.chart-card.half {
+  margin-bottom: 0;
+}
+
+.chart-card h3 {
+  margin-bottom: var(--spacing-lg);
+  color: var(--gray-700);
+  font-size: var(--font-size-lg);
+}
+
+@media (max-width: 768px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+}
