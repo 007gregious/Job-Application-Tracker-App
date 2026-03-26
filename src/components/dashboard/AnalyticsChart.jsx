@@ -1,162 +1,129 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  AreaChart, Area
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area
 } from 'recharts';
 
 const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 const AnalyticsChart = ({ applications }) => {
-  const [chartData, setChartData] = useState({
-    monthlyData: [],
-    statusData: [],
-    responseData: []
-  });
-
-  useEffect(() => {
-    if (applications && applications.length > 0) {
-      generateCharts();
+  const chartData = useMemo(() => {
+    if (!applications?.length) {
+      return {
+        monthlyData: [],
+        statusData: [],
+        conversionData: []
+      };
     }
-  }, [applications]);
 
-  const generateCharts = () => {
-    // 1. Applications by month
-    const monthlyData = generateMonthlyData();
-    
-    // 2. Status distribution
-    const statusData = generateStatusData();
-    
-    // 3. Applications by day of week
-    const weeklyData = generateWeeklyData();
-
-    setChartData({
-      monthlyData,
-      statusData,
-      weeklyData
-    });
-  };
-
-  const generateMonthlyData = () => {
     const months = {};
     const last6Months = [];
-    
-    // Get last 6 months
+
     for (let i = 5; i >= 0; i--) {
       const d = new Date();
       d.setMonth(d.getMonth() - i);
+
       const monthKey = `${d.getFullYear()}-${d.getMonth() + 1}`;
       const monthName = d.toLocaleString('default', { month: 'short' });
-      months[monthKey] = { month: monthName, count: 0, interviews: 0 };
+
+      months[monthKey] = {
+        month: monthName,
+        applications: 0,
+        interviews: 0,
+        rejected: 0
+      };
       last6Months.push(monthKey);
     }
-    
-    // Count applications per month
+
+    const statusCounts = {
+      Applied: 0,
+      Interview: 0,
+      Offer: 0,
+      Accepted: 0,
+      Rejected: 0,
+      Withdrawn: 0
+    };
+
     applications.forEach(app => {
       const date = new Date(app.applied_date);
       const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+
       if (months[monthKey]) {
-        months[monthKey].count++;
-        if (app.status === 'Interview' || app.status === 'Offer') {
-          months[monthKey].interviews++;
+        months[monthKey].applications += 1;
+        if (app.status === 'Interview' || app.status === 'Offer' || app.status === 'Accepted') {
+          months[monthKey].interviews += 1;
+        }
+        if (app.status === 'Rejected') {
+          months[monthKey].rejected += 1;
         }
       }
-    });
-    
-    return last6Months.map(key => months[key]);
-  };
 
-  const generateStatusData = () => {
-    const statusCounts = {};
-    applications.forEach(app => {
       statusCounts[app.status] = (statusCounts[app.status] || 0) + 1;
     });
-    
-    return Object.entries(statusCounts).map(([name, value]) => ({
-      name,
-      value
-    }));
-  };
 
-  const generateWeeklyData = () => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const weeklyData = days.map(day => ({ day, count: 0 }));
-    
-    applications.forEach(app => {
-      const date = new Date(app.applied_date);
-      const dayName = days[date.getDay()];
-      const dayData = weeklyData.find(d => d.day === dayName);
-      if (dayData) dayData.count++;
-    });
-    
-    return weeklyData;
-  };
+    const monthlyData = last6Months.map(key => months[key]);
 
-  const getTotalStats = () => {
+    const statusData = Object.entries(statusCounts)
+      .filter(([, value]) => value > 0)
+      .map(([name, value]) => ({ name, value }));
+
     const total = applications.length;
-    const interviews = applications.filter(a => a.status === 'Interview' || a.status === 'Offer').length;
-    const responseRate = total ? ((interviews / total) * 100).toFixed(1) : 0;
-    const uniqueCompanies = new Set(applications.map(a => a.company)).size;
-    
-    return { total, interviews, responseRate, uniqueCompanies };
-  };
+    const interviewPipeline = statusCounts.Interview + statusCounts.Offer + statusCounts.Accepted;
+    const conversionData = [
+      { metric: 'Pending', value: Number(((statusCounts.Applied / total) * 100).toFixed(1)) },
+      { metric: 'Interview', value: Number(((interviewPipeline / total) * 100).toFixed(1)) },
+      { metric: 'Offer/Accepted', value: Number((((statusCounts.Offer + statusCounts.Accepted) / total) * 100).toFixed(1)) },
+      { metric: 'Rejected', value: Number(((statusCounts.Rejected / total) * 100).toFixed(1)) }
+    ];
 
-  const stats = getTotalStats();
+    return {
+      monthlyData,
+      statusData,
+      conversionData
+    };
+  }, [applications]);
 
-  if (applications.length === 0) {
+  if (!applications.length) {
     return (
       <div className="analytics-empty">
-        <p>í³Š Add some applications to see analytics!</p>
+        <p>Add some applications to see analytics.</p>
       </div>
     );
   }
 
   return (
     <div className="analytics-charts">
-      {/* KPI Cards */}
-      <div className="kpi-grid">
-        <div className="kpi-card">
-          <h3>Total Applications</h3>
-          <p className="kpi-value">{stats.total}</p>
-        </div>
-        <div className="kpi-card">
-          <h3>Interview Rate</h3>
-          <p className="kpi-value">{stats.responseRate}%</p>
-        </div>
-        <div className="kpi-card">
-          <h3>Companies Applied</h3>
-          <p className="kpi-value">{stats.uniqueCompanies}</p>
-        </div>
-        <div className="kpi-card">
-          <h3>Interviews</h3>
-          <p className="kpi-value">{stats.interviews}</p>
-        </div>
+      <div className="chart-card">
+        <h3>Monthly Application Trends</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart data={chartData.monthlyData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Area type="monotone" dataKey="applications" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.3} name="Applications" />
+            <Area type="monotone" dataKey="interviews" stroke="#10b981" fill="#10b981" fillOpacity={0.3} name="Interview Stage" />
+            <Area type="monotone" dataKey="rejected" stroke="#ef4444" fill="#ef4444" fillOpacity={0.2} name="Rejected" />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
 
-      {/* Monthly Trends Chart */}
-      {chartData.monthlyData.length > 0 && (
-        <div className="chart-card">
-          <h3>í³ˆ Monthly Application Trends</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={chartData.monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Area type="monotone" dataKey="count" stroke="#4f46e5" fill="#4f46e5" fillOpacity={0.3} name="Applications" />
-              <Area type="monotone" dataKey="interviews" stroke="#10b981" fill="#10b981" fillOpacity={0.3} name="Interviews" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      {/* Two column layout */}
       <div className="charts-row">
-        {/* Status Distribution */}
         {chartData.statusData.length > 0 && (
           <div className="chart-card half">
-            <h3>í¾¯ Application Status</h3>
+            <h3>Application Status Distribution</h3>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
@@ -169,7 +136,7 @@ const AnalyticsChart = ({ applications }) => {
                   dataKey="value"
                 >
                   {chartData.statusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${entry.name}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -178,21 +145,18 @@ const AnalyticsChart = ({ applications }) => {
           </div>
         )}
 
-        {/* Best Days to Apply */}
-        {chartData.weeklyData && (
-          <div className="chart-card half">
-            <h3>í³… Best Days to Apply</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={chartData.weeklyData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="count" fill="#8b5cf6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
+        <div className="chart-card half">
+          <h3>Pipeline Conversion Rates</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={chartData.conversionData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="metric" />
+              <YAxis unit="%" domain={[0, 100]} />
+              <Tooltip formatter={value => `${value}%`} />
+              <Bar dataKey="value" fill="#8b5cf6" name="Rate" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
