@@ -9,7 +9,8 @@ const Input = ({
   placeholder,
   required = false,
   error,
-  options
+  options,
+  ...rest
 }) => {
   return (
     <div className="form-group">
@@ -23,6 +24,7 @@ const Input = ({
           onChange={onChange}
           required={required}
           className={error ? 'error' : ''}
+          {...rest}
         >
           <option value="">Select {label}</option>
           {options?.map(option => (
@@ -41,6 +43,7 @@ const Input = ({
           required={required}
           className={error ? 'error' : ''}
           rows="4"
+          {...rest}
         />
       ) : (
         <input
@@ -52,6 +55,7 @@ const Input = ({
           placeholder={placeholder}
           required={required}
           className={error ? 'error' : ''}
+          {...rest}
         />
       )}
       

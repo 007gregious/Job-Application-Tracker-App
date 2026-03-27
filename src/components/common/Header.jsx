@@ -3,6 +3,13 @@ import { FaBriefcase } from 'react-icons/fa';
 import Button from './Button';
 
 const Header = ({ currentUser, onSignOut }) => {
+  const initials = (currentUser?.name || 'U')
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
+
   return (
     <header className="header">
       <div className="header-content">
@@ -14,7 +21,16 @@ const Header = ({ currentUser, onSignOut }) => {
 
         {currentUser && (
           <div className="header-auth">
-            <span>Signed in as <strong>{currentUser.name}</strong></span>
+            <div className="header-user-meta">
+              <div className="profile-avatar" aria-hidden="true">
+                {currentUser.profile?.photo ? (
+                  <img src={currentUser.profile.photo} alt={`${currentUser.name} avatar`} />
+                ) : (
+                  <span>{initials}</span>
+                )}
+              </div>
+              <span>Signed in as <strong>{currentUser.name}</strong></span>
+            </div>
             <Button variant="secondary" onClick={onSignOut}>Sign Out</Button>
           </div>
         )}

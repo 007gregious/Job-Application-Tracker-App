@@ -11,38 +11,47 @@ export const useApplications = () => {
   return context;
 };
 
-export const ApplicationProvider = ({ children }) => {
+export const ApplicationProvider = ({ children, currentUserId }) => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadApplications();
-  }, []);
+    loadApplications(currentUserId);
+  }, [currentUserId]);
 
-  const loadApplications = () => {
-    const data = storageService.getApplications();
+  const loadApplications = (userId) => {
+    if (!userId) {
+      setApplications([]);
+      setLoading(false);
+      return;
+    }
+
+    const data = storageService.getApplications(userId);
     setApplications(data);
     setLoading(false);
   };
 
   const addApplication = (application) => {
+    if (!currentUserId) return;
     const updated = [...applications, application];
     setApplications(updated);
-    storageService.saveApplications(updated);
+    storageService.saveApplications(updated, currentUserId);
   };
 
   const updateApplication = (updatedApplication) => {
+    if (!currentUserId) return;
     const updated = applications.map(app => 
       app.id === updatedApplication.id ? updatedApplication : app
     );
     setApplications(updated);
-    storageService.saveApplications(updated);
+    storageService.saveApplications(updated, currentUserId);
   };
 
   const deleteApplication = (id) => {
+    if (!currentUserId) return;
     const updated = applications.filter(app => app.id !== id);
     setApplications(updated);
-    storageService.saveApplications(updated);
+    storageService.saveApplications(updated, currentUserId);
   };
 
   const value = {
