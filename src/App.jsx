@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { FaTimes, FaUserCircle, FaChartPie, FaListUl, FaPlusCircle, FaSignOutAlt } from 'react-icons/fa';
+import {
+  FaTimes,
+  FaUserCircle,
+  FaChartPie,
+  FaListUl,
+  FaPlusCircle,
+  FaSignOutAlt,
+  FaMoon,
+  FaSun
+} from 'react-icons/fa';
 import Header from './components/common/Header';
 import Dashboard from './components/dashboard/Dashboard';
 import ApplicationForm from './components/applications/ApplicationForm';
@@ -16,10 +25,16 @@ function App() {
   const [view, setView] = useState('dashboard');
   const [currentUser, setCurrentUser] = useState(null);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
   useEffect(() => {
     setCurrentUser(authService.getCurrentUser());
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const handleSignOut = () => {
     authService.signOut();
@@ -83,9 +98,20 @@ function App() {
                 </button>
               </nav>
 
-              <button type="button" className="side-menu-signout" onClick={handleSignOut}>
-                <FaSignOutAlt /> Sign Out
-              </button>
+              <div className="side-menu-footer">
+                <button
+                  type="button"
+                  className="side-menu-theme-toggle"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                >
+                  {theme === 'dark' ? <FaSun /> : <FaMoon />}
+                  Switch to {theme === 'dark' ? 'Light' : 'Dark'} Theme
+                </button>
+
+                <button type="button" className="side-menu-signout" onClick={handleSignOut}>
+                  <FaSignOutAlt /> Sign Out
+                </button>
+              </div>
             </aside>
           </>
         )}
