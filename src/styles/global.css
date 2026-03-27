@@ -1000,6 +1000,7 @@ body {
 }
 
 .side-menu-nav button,
+.side-menu-theme-toggle,
 .side-menu-signout {
   border: 1px solid var(--x-border);
   border-radius: var(--radius-lg);
@@ -1014,7 +1015,15 @@ body {
   cursor: pointer;
 }
 
+.side-menu-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
 .side-menu-nav button:hover,
+.side-menu-theme-toggle:hover,
 .side-menu-signout:hover {
   background: var(--x-hover);
 }
