@@ -1,26 +1,35 @@
 :root {
   /* Colors */
-  --primary-color: #4f46e5;
-  --primary-dark: #4338ca;
-  --primary-light: #818cf8;
+  --primary-color: #1d9bf0;
+  --primary-dark: #1a8cd8;
+  --primary-light: #66c6ff;
   --secondary-color: #6b7280;
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --danger-color: #ef4444;
   --info-color: #3b82f6;
+
+  /* X/Twitter-inspired dark palette */
+  --x-bg: #000000;
+  --x-surface: #16181c;
+  --x-surface-elevated: #1d1f23;
+  --x-border: #2f3336;
+  --x-text-primary: #e7e9ea;
+  --x-text-secondary: #71767b;
+  --x-hover: #1e2732;
   
   /* Neutral Colors */
   --white: #ffffff;
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-300: #d1d5db;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
+  --gray-50: #0a0f14;
+  --gray-100: #111820;
+  --gray-200: #1f2937;
+  --gray-300: #334155;
+  --gray-400: #64748b;
+  --gray-500: #94a3b8;
+  --gray-600: #cbd5e1;
+  --gray-700: #e2e8f0;
+  --gray-800: #f1f5f9;
+  --gray-900: #f8fafc;
   
   /* Spacing */
   --spacing-xs: 0.25rem;
