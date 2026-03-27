@@ -1,8 +1,8 @@
 import React from 'react';
-import { FaBriefcase } from 'react-icons/fa';
+import { FaBars, FaBriefcase } from 'react-icons/fa';
 import Button from './Button';
 
-const Header = ({ currentUser, onSignOut }) => {
+const Header = ({ currentUser, onSignOut, onOpenMenu }) => {
   const initials = (currentUser?.name || 'U')
     .split(' ')
     .filter(Boolean)
@@ -31,7 +31,12 @@ const Header = ({ currentUser, onSignOut }) => {
               </div>
               <span>Signed in as <strong>{currentUser.name}</strong></span>
             </div>
-            <Button variant="secondary" onClick={onSignOut}>Sign Out</Button>
+            <div className="header-actions">
+              <Button variant="secondary" onClick={onSignOut}>Sign Out</Button>
+              <button type="button" className="icon-only-btn" onClick={onOpenMenu} aria-label="Open side menu">
+                <FaBars />
+              </button>
+            </div>
           </div>
         )}
       </div>

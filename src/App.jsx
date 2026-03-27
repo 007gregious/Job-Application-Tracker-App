@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { FaTimes, FaUserCircle, FaChartPie, FaListUl, FaPlusCircle, FaSignOutAlt } from 'react-icons/fa';
 import Header from './components/common/Header';
 import Dashboard from './components/dashboard/Dashboard';
 import ApplicationForm from './components/applications/ApplicationForm';
@@ -14,6 +15,7 @@ import './styles/global.css';
 function App() {
   const [view, setView] = useState('dashboard');
   const [currentUser, setCurrentUser] = useState(null);
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
 
   useEffect(() => {
     setCurrentUser(authService.getCurrentUser());
@@ -23,6 +25,7 @@ function App() {
     authService.signOut();
     setCurrentUser(null);
     setView('dashboard');
+    setIsSideMenuOpen(false);
   };
 
   const handleAuthenticated = (user) => {
@@ -38,7 +41,54 @@ function App() {
     <ApplicationProvider currentUserId={currentUser?.id}>
       <div className="app">
         <Toaster position="top-right" />
-        <Header currentUser={currentUser} onSignOut={handleSignOut} />
+        <Header
+          currentUser={currentUser}
+          onSignOut={handleSignOut}
+          onOpenMenu={() => setIsSideMenuOpen(true)}
+        />
+
+        {currentUser && (
+          <>
+            <button
+              className={`side-menu-overlay ${isSideMenuOpen ? 'open' : ''}`}
+              onClick={() => setIsSideMenuOpen(false)}
+              aria-label="Close side menu"
+              type="button"
+            />
+            <aside className={`side-menu ${isSideMenuOpen ? 'open' : ''}`}>
+              <div className="side-menu-header">
+                <h3>Quick Access</h3>
+                <button
+                  type="button"
+                  className="icon-only-btn"
+                  onClick={() => setIsSideMenuOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <nav className="side-menu-nav">
+                <button type="button" onClick={() => { setView('dashboard'); setIsSideMenuOpen(false); }}>
+                  <FaChartPie /> Dashboard
+                </button>
+                <button type="button" onClick={() => { setView('list'); setIsSideMenuOpen(false); }}>
+                  <FaListUl /> Applications
+                </button>
+                <button type="button" onClick={() => { setView('add'); setIsSideMenuOpen(false); }}>
+                  <FaPlusCircle /> Add Application
+                </button>
+                <button type="button" onClick={() => { setView('profile'); setIsSideMenuOpen(false); }}>
+                  <FaUserCircle /> My Profile
+                </button>
+              </nav>
+
+              <button type="button" className="side-menu-signout" onClick={handleSignOut}>
+                <FaSignOutAlt /> Sign Out
+              </button>
+            </aside>
+          </>
+        )}
 
         <main className="main-content">
           {!currentUser ? (
@@ -63,12 +113,6 @@ function App() {
                   onClick={() => setView('add')}
                 >
                   + Add New
-                </button>
-                <button
-                  className={view === 'profile' ? 'active' : ''}
-                  onClick={() => setView('profile')}
-                >
-                  Profile
                 </button>
               </div>
 
