@@ -6,6 +6,7 @@ import ApplicationForm from './components/applications/ApplicationForm';
 import ApplicationList from './components/applications/ApplicationList';
 import Footer from './components/common/Footer';
 import AuthPage from './components/auth/AuthPage';
+import ProfilePage from './components/profile/ProfilePage';
 import { ApplicationProvider } from './hooks/useApplications';
 import { authService } from './services/authService';
 import './styles/global.css';
@@ -25,11 +26,16 @@ function App() {
   };
 
   const handleAuthenticated = (user) => {
-    setCurrentUser({ id: user.id, name: user.name, email: user.email });
+    const sessionUser = authService.getCurrentUser();
+    setCurrentUser(sessionUser || { id: user.id, name: user.name, email: user.email, profile: user.profile });
+  };
+
+  const handleProfileUpdated = (sessionUser) => {
+    setCurrentUser(sessionUser);
   };
 
   return (
-    <ApplicationProvider>
+    <ApplicationProvider currentUserId={currentUser?.id}>
       <div className="app">
         <Toaster position="top-right" />
         <Header currentUser={currentUser} onSignOut={handleSignOut} />
@@ -58,11 +64,20 @@ function App() {
                 >
                   + Add New
                 </button>
+                <button
+                  className={view === 'profile' ? 'active' : ''}
+                  onClick={() => setView('profile')}
+                >
+                  Profile
+                </button>
               </div>
 
               {view === 'dashboard' && <Dashboard />}
               {view === 'add' && <ApplicationForm onSuccess={() => setView('list')} />}
               {view === 'list' && <ApplicationList />}
+              {view === 'profile' && (
+                <ProfilePage currentUser={currentUser} onProfileUpdated={handleProfileUpdated} />
+              )}
             </>
           )}
         </main>

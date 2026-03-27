@@ -1,19 +1,29 @@
 const STORAGE_KEY = 'job_applications';
+const getUserStorageKey = (userId) => (userId ? `${STORAGE_KEY}:${userId}` : STORAGE_KEY);
 
 export const storageService = {
-  getApplications: () => {
+  getApplications: (userId) => {
     try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
+      const userData = localStorage.getItem(getUserStorageKey(userId));
+      if (userData) {
+        return JSON.parse(userData);
+      }
+
+      if (userId) {
+        const legacyData = localStorage.getItem(STORAGE_KEY);
+        return legacyData ? JSON.parse(legacyData) : [];
+      }
+
+      return [];
     } catch (error) {
       console.error('Error reading from localStorage:', error);
       return [];
     }
   },
 
-  saveApplications: (applications) => {
+  saveApplications: (applications, userId) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(applications));
+      localStorage.setItem(getUserStorageKey(userId), JSON.stringify(applications));
       return true;
     } catch (error) {
       console.error('Error saving to localStorage:', error);
@@ -21,25 +31,25 @@ export const storageService = {
     }
   },
 
-  addApplication: (application) => {
-    const applications = storageService.getApplications();
+  addApplication: (application, userId) => {
+    const applications = storageService.getApplications(userId);
     applications.push(application);
-    return storageService.saveApplications(applications);
+    return storageService.saveApplications(applications, userId);
   },
 
-  updateApplication: (updatedApplication) => {
-    const applications = storageService.getApplications();
+  updateApplication: (updatedApplication, userId) => {
+    const applications = storageService.getApplications(userId);
     const index = applications.findIndex(app => app.id === updatedApplication.id);
     if (index !== -1) {
       applications[index] = updatedApplication;
-      return storageService.saveApplications(applications);
+      return storageService.saveApplications(applications, userId);
     }
     return false;
   },
 
-  deleteApplication: (id) => {
-    const applications = storageService.getApplications();
+  deleteApplication: (id, userId) => {
+    const applications = storageService.getApplications(userId);
     const filtered = applications.filter(app => app.id !== id);
-    return storageService.saveApplications(filtered);
+    return storageService.saveApplications(filtered, userId);
   }
 };
