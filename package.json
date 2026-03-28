@@ -26,7 +26,8 @@
     "server": "node server.js",
     "client": "react-scripts start",
     "db:setup": "node setup-db.js",
-    "db:seed": "node seed-db.js"
+    "db:seed": "node seed-db.js",
+    "test:ci": "react-scripts test --watchAll=false --passWithNoTests"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
