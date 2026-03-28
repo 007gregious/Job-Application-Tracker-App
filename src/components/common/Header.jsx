@@ -13,14 +13,16 @@ const Header = ({ currentUser, onSignOut, onOpenMenu }) => {
   return (
     <header className="header">
       <div className="header-content">
-        <div className="logo">
-          <FaBriefcase className="logo-icon" />
-          <h1>JobTrackr</h1>
+        <div className="header-brand">
+          <div className="logo">
+            <FaBriefcase className="logo-icon" />
+            <h1>JobTrackr</h1>
+          </div>
+          <p className="tagline">Your Personal Job Application Tracker</p>
         </div>
-        <p className="tagline">Your Personal Job Application Tracker</p>
 
         {currentUser && (
-          <div className="header-auth">
+          <div className="header-auth" role="complementary" aria-label="User quick actions">
             <div className="header-user-meta">
               <div className="profile-avatar" aria-hidden="true">
                 {currentUser.profile?.photo ? (
@@ -31,6 +33,7 @@ const Header = ({ currentUser, onSignOut, onOpenMenu }) => {
               </div>
               <span>Signed in as <strong>{currentUser.name}</strong></span>
             </div>
+
             <div className="header-actions">
               <Button variant="secondary" onClick={onSignOut}>Sign Out</Button>
               <button type="button" className="icon-only-btn" onClick={onOpenMenu} aria-label="Open side menu">
