@@ -31,7 +31,7 @@ const Header = ({ currentUser, onSignOut, onOpenMenu }) => {
                   <span>{initials}</span>
                 )}
               </div>
-              <span>Signed in as <strong>{currentUser.name}</strong></span>
+              <strong className="header-user-name">{currentUser.name}</strong>
             </div>
 
             <div className="header-actions">
