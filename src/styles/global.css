@@ -279,6 +279,7 @@ body {
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--x-border);
+  margin-top: var(--spacing-xl);
 }
 
 .recent-applications h3 {
