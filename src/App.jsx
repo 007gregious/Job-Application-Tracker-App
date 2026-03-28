@@ -58,7 +58,6 @@ function App() {
         <Toaster position="top-right" />
         <Header
           currentUser={currentUser}
-          onSignOut={handleSignOut}
           onOpenMenu={() => setIsSideMenuOpen(true)}
         />
 

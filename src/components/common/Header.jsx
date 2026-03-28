@@ -1,8 +1,7 @@
 import React from 'react';
 import { FaBars, FaBriefcase } from 'react-icons/fa';
-import Button from './Button';
 
-const Header = ({ currentUser, onSignOut, onOpenMenu }) => {
+const Header = ({ currentUser, onOpenMenu }) => {
   const initials = (currentUser?.name || 'U')
     .split(' ')
     .filter(Boolean)
@@ -35,7 +34,6 @@ const Header = ({ currentUser, onSignOut, onOpenMenu }) => {
             </div>
 
             <div className="header-actions">
-              <Button variant="secondary" onClick={onSignOut}>Sign Out</Button>
               <button type="button" className="icon-only-btn" onClick={onOpenMenu} aria-label="Open side menu">
                 <FaBars />
               </button>

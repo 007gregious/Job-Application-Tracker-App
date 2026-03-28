@@ -12,6 +12,7 @@
   /* Dark theme palette */
   --x-bg: #071326;
   --x-surface: #0c1d36;
+  --x-surface-glass: rgb(12 29 54 / 72%);
   --x-surface-elevated: #122645;
   --x-border: #24436f;
   --x-text-primary: #eaf3ff;
@@ -70,6 +71,7 @@
 [data-theme='light'] {
   --x-bg: #f4f8ff;
   --x-surface: #ffffff;
+  --x-surface-glass: rgb(255 255 255 / 72%);
   --x-surface-elevated: #edf4ff;
   --x-border: #c8dcff;
   --x-text-primary: #12305b;
