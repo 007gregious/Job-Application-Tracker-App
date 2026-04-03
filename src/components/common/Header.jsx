@@ -22,6 +22,12 @@ const Header = ({ currentUser, onOpenMenu }) => {
 
         {currentUser && (
           <div className="header-auth" role="complementary" aria-label="User quick actions">
+            <div className="header-actions">
+              <button type="button" className="icon-only-btn" onClick={onOpenMenu} aria-label="Open side menu">
+                <FaBars />
+              </button>
+            </div>
+
             <div className="header-user-meta">
               <div className="profile-avatar" aria-hidden="true">
                 {currentUser.profile?.photo ? (
@@ -31,12 +37,6 @@ const Header = ({ currentUser, onOpenMenu }) => {
                 )}
               </div>
               <strong className="header-user-name">{currentUser.name}</strong>
-            </div>
-
-            <div className="header-actions">
-              <button type="button" className="icon-only-btn" onClick={onOpenMenu} aria-label="Open side menu">
-                <FaBars />
-              </button>
             </div>
           </div>
         )}

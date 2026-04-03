@@ -18,6 +18,8 @@ import {
 const COLORS = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
 const AnalyticsChart = ({ applications }) => {
+  const getAppliedDate = (application) => application.appliedDate || application.applied_date || application.dateApplied;
+
   const chartData = useMemo(() => {
     if (!applications?.length) {
       return {
@@ -56,7 +58,13 @@ const AnalyticsChart = ({ applications }) => {
     };
 
     applications.forEach(app => {
-      const date = new Date(app.applied_date);
+      const appliedDate = getAppliedDate(app);
+      const date = new Date(appliedDate);
+
+      if (Number.isNaN(date.getTime())) {
+        return;
+      }
+
       const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
 
       if (months[monthKey]) {
