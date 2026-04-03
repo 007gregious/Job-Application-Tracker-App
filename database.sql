@@ -14,14 +14,31 @@ CREATE TABLE IF NOT EXISTS applications (
     job_url TEXT,
     notes TEXT,
     source VARCHAR(100),
+    fit_score INTEGER DEFAULT 0,
+    apply_queue_status VARCHAR(30) DEFAULT 'draft',
+    packet_resume_version VARCHAR(120),
+    packet_cover_letter TEXT,
+    packet_answers_json TEXT,
+    autofill_url TEXT,
+    submitted_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Migration-safe column additions for existing databases
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS fit_score INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS apply_queue_status VARCHAR(30) DEFAULT 'draft';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS packet_resume_version VARCHAR(120);
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS packet_cover_letter TEXT;
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS packet_answers_json TEXT;
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS autofill_url TEXT;
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS submitted_at TIMESTAMP;
 
 -- Create index for faster queries
 CREATE INDEX IF NOT EXISTS idx_user_id ON applications(user_id);
 CREATE INDEX IF NOT EXISTS idx_status ON applications(status);
 CREATE INDEX IF NOT EXISTS idx_applied_date ON applications(applied_date);
+CREATE INDEX IF NOT EXISTS idx_apply_queue_status ON applications(apply_queue_status);
 
 -- Create reminders table for future feature
 CREATE TABLE IF NOT EXISTS reminders (
