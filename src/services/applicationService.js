@@ -35,6 +35,52 @@ class ApplicationService {
     if (!response.ok) throw new Error('Failed to delete');
     return response.json();
   }
+
+  async saveApplyPacket(id, data) {
+    const response = await fetch(`${API_URL}/applications/${id}/packet`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Failed to save apply packet');
+    return response.json();
+  }
+
+  async queueReady(id, minimumReadiness = 65) {
+    const response = await fetch(`${API_URL}/applications/${id}/ready`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ minimumReadiness })
+    });
+    if (!response.ok) throw new Error('Failed to move application to ready queue');
+    return response.json();
+  }
+
+  async markSubmitted(id, data) {
+    const response = await fetch(`${API_URL}/applications/${id}/submitted`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Failed to confirm submission');
+    return response.json();
+  }
+
+  async getReadyQueue(userId) {
+    const response = await fetch(`${API_URL}/queue?userId=${userId}&status=ready`);
+    if (!response.ok) throw new Error('Failed to fetch ready queue');
+    return response.json();
+  }
+
+  async importJobs(userId, opportunities) {
+    const response = await fetch(`${API_URL}/jobs/import`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, opportunities })
+    });
+    if (!response.ok) throw new Error('Failed to import jobs');
+    return response.json();
+  }
 }
 
 const applicationService = new ApplicationService();

@@ -36,6 +36,8 @@ const ApplicationCard = ({ application, onDelete }) => {
   }, [application.status, currentStepIndex]);
 
   const progressValue = STATUS_PROGRESS[application.status] || 0;
+  const queueStatus = application.queueStatus || 'draft';
+  const applyPacket = application.applyPacket || {};
 
   const handleStatusUpdate = (nextStatus) => {
     if (nextStatus === 'Rejected') {
@@ -64,6 +66,11 @@ const ApplicationCard = ({ application, onDelete }) => {
     setIsRejectModalOpen(false);
     setRejectionError('');
     toast.success('Status updated to Rejected with feedback saved');
+  };
+
+  const updateQueueStatus = (nextQueueStatus) => {
+    updateApplication({ ...application, queueStatus: nextQueueStatus });
+    toast.success(`Queue status moved to ${nextQueueStatus}`);
   };
 
   if (isEditing) {
@@ -132,6 +139,25 @@ const ApplicationCard = ({ application, onDelete }) => {
             )}
           </div>
 
+          <div className="status-progress-wrapper" onClick={(e) => e.stopPropagation()}>
+            <div className="status-progress-label-row">
+              <span>Apply queue</span>
+              <strong>{queueStatus.toUpperCase()}</strong>
+            </div>
+            <div className="status-editor-actions">
+              {queueStatus === 'draft' && (
+                <button type="button" className="status-chip" onClick={() => updateQueueStatus('ready')}>
+                  Mark Ready
+                </button>
+              )}
+              {queueStatus === 'ready' && (
+                <button type="button" className="status-chip" onClick={() => updateQueueStatus('submitted')}>
+                  Confirm Submitted
+                </button>
+              )}
+            </div>
+          </div>
+
           {showDetails && (
             <div className="details-section">
               {application.jobType && (
@@ -156,6 +182,12 @@ const ApplicationCard = ({ application, onDelete }) => {
                   <strong>Notes:</strong>
                   <p>{application.notes}</p>
                 </div>
+              )}
+              <p><strong>Fit Score:</strong> {applyPacket.fitScore || 0}</p>
+              <p><strong>Readiness Score:</strong> {applyPacket.readinessScore || 0}</p>
+              {applyPacket.resumeVersion && <p><strong>Resume Version:</strong> {applyPacket.resumeVersion}</p>}
+              {applyPacket.answers?.whyThisRole && (
+                <p><strong>Why this role:</strong> {applyPacket.answers.whyThisRole}</p>
               )}
             </div>
           )}
