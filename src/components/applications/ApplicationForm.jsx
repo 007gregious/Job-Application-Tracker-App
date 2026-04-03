@@ -6,6 +6,7 @@ import Button from '../common/Button';
 import { useApplications } from '../../hooks/useApplications';
 import { validateApplication } from '../../services/validationService';
 import { APPLICATION_STATUS } from '../../utils/constants';
+import { buildFitScore, buildReadinessScore } from '../../utils/scoring';
 
 const ApplicationForm = ({ onSuccess, applicationToEdit }) => {
   const { addApplication, updateApplication } = useApplications();
@@ -21,7 +22,12 @@ const ApplicationForm = ({ onSuccess, applicationToEdit }) => {
     contactEmail: applicationToEdit?.contactEmail || '',
     jobUrl: applicationToEdit?.jobUrl || '',
     notes: applicationToEdit?.notes || '',
-    rejectionReason: applicationToEdit?.rejectionReason || ''
+    rejectionReason: applicationToEdit?.rejectionReason || '',
+    resumeVersion: applicationToEdit?.applyPacket?.resumeVersion || '',
+    coverLetter: applicationToEdit?.applyPacket?.coverLetter || '',
+    answerWhyRole: applicationToEdit?.applyPacket?.answers?.whyThisRole || '',
+    answerSalaryExpectation: applicationToEdit?.applyPacket?.answers?.salaryExpectation || '',
+    answerAvailability: applicationToEdit?.applyPacket?.answers?.availability || ''
   });
   
   const [errors, setErrors] = useState({});
@@ -45,11 +51,39 @@ const ApplicationForm = ({ onSuccess, applicationToEdit }) => {
       return;
     }
 
+    const answers = {
+      whyThisRole: formData.answerWhyRole,
+      salaryExpectation: formData.answerSalaryExpectation,
+      availability: formData.answerAvailability
+    };
+
+    const fitScore = buildFitScore(formData);
+    const readinessScore = buildReadinessScore({
+      resumeVersion: formData.resumeVersion,
+      coverLetter: formData.coverLetter,
+      answers,
+      fitScore: fitScore.total
+    });
+
+    const payload = {
+      ...formData,
+      applyPacket: {
+        resumeVersion: formData.resumeVersion,
+        coverLetter: formData.coverLetter,
+        answers,
+        fitScore: fitScore.total,
+        scoreBreakdown: fitScore.breakdown,
+        readinessScore,
+        confidenceScore: fitScore.total
+      },
+      queueStatus: applicationToEdit?.queueStatus || 'draft'
+    };
+
     if (applicationToEdit) {
-      updateApplication({ ...formData, id: applicationToEdit.id });
+      updateApplication({ ...payload, id: applicationToEdit.id });
       toast.success('Application updated successfully!');
     } else {
-      addApplication({ ...formData, id: uuidv4() });
+      addApplication({ ...payload, id: uuidv4() });
       toast.success('Application added successfully!');
     }
     
@@ -174,6 +208,48 @@ const ApplicationForm = ({ onSuccess, applicationToEdit }) => {
           value={formData.notes}
           onChange={handleChange}
           placeholder="Add any additional notes about the application..."
+        />
+        <h3>Apply Packet</h3>
+        <div className="form-row">
+          <Input
+            label="Resume Version ID"
+            name="resumeVersion"
+            value={formData.resumeVersion}
+            onChange={handleChange}
+            placeholder="e.g., resume-v3-product"
+          />
+          <Input
+            type="textarea"
+            label="Why this role?"
+            name="answerWhyRole"
+            value={formData.answerWhyRole}
+            onChange={handleChange}
+            placeholder="Short answer template for ATS forms"
+          />
+        </div>
+        <div className="form-row">
+          <Input
+            label="Salary expectation"
+            name="answerSalaryExpectation"
+            value={formData.answerSalaryExpectation}
+            onChange={handleChange}
+            placeholder="e.g., Open to market range"
+          />
+          <Input
+            label="Start availability"
+            name="answerAvailability"
+            value={formData.answerAvailability}
+            onChange={handleChange}
+            placeholder="e.g., 2 weeks notice"
+          />
+        </div>
+        <Input
+          type="textarea"
+          label="Generated cover letter"
+          name="coverLetter"
+          value={formData.coverLetter}
+          onChange={handleChange}
+          placeholder="Paste generated cover letter draft here..."
         />
 
         {formData.status === 'Rejected' && (

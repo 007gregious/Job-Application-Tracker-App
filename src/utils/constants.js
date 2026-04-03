@@ -27,3 +27,9 @@ export const DATE_RANGES = [
   { value: '90', label: 'Last 90 days' },
   { value: '365', label: 'Last year' }
 ];
+
+export const APPLY_QUEUE_STATUSES = [
+  { value: 'draft', label: 'Draft' },
+  { value: 'ready', label: 'Ready' },
+  { value: 'submitted', label: 'Submitted' }
+];

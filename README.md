@@ -130,9 +130,11 @@ Base path: `/api`
 - `DELETE /api/applications/:id` — delete application
 - `GET /api/stats/:userId` — aggregated status counts
 - `POST /api/applications/:id/packet` — save or update apply packet details (fit score, resume version, cover letter, answers, autofill URL)
+- `POST /api/jobs/import` — store imported job opportunities before application creation
+- `POST /api/applications/:id/ready` — move an application into the Ready-to-Apply queue (with readiness/duplicate checks)
 - `POST /api/applications/:id/queue` — move application through assisted auto-apply queue (`draft`, `ready`, `paused`, `submitted`)
 - `GET /api/queue?userId=<id>&status=ready` — fetch queue items by status
-- `POST /api/applications/:id/submitted` — confirm submission and mark queue status as `submitted`
+- `POST /api/applications/:id/submitted` — confirm submission, apply guardrails, and mark queue status as `submitted`
 - `GET /health` — deployment health endpoint
 
 ---
@@ -142,8 +144,8 @@ Base path: `/api`
 This project now includes a backend-ready, no-background-worker auto-apply flow designed for free-tier hosting:
 
 1. Create an application as usual.
-2. Save an **apply packet** (`/api/applications/:id/packet`) with resume version, cover letter, and short-answer JSON.
-3. Move the application to queue status `ready` (`/api/applications/:id/queue`).
+2. Save an **apply packet** (`/api/applications/:id/packet`) with resume version, cover letter, short-answer JSON, and rule-based fit/readiness scores.
+3. Move the application to queue status `ready` (`/api/applications/:id/ready` or `/api/applications/:id/queue`).
 4. Fetch queue items from `/api/queue?userId=<id>&status=ready` for extension/UI processing.
 5. After the user finishes an external form, confirm with `/api/applications/:id/submitted`.
 
