@@ -44,25 +44,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Validate Render deploy hook
-        env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      - name: Skip deploy when Render hook is missing
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_URL == '' }}
         run: |
-          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
-            echo "RENDER_DEPLOY_HOOK_URL secret is not set."
-            exit 1
-          fi
+          echo "RENDER_DEPLOY_HOOK_URL secret is not set. Skipping deployment."
 
       - name: Trigger Render Deploy
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_URL != '' }}
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           curl --fail --silent --show-error -X POST "$RENDER_DEPLOY_HOOK_URL"
 
       - name: Wait for deployment
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_URL != '' }}
         run: sleep 30
 
       - name: Check deployment status
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_URL != '' }}
         run: |
           echo "Deployment triggered! Check status at:"
           echo "https://dashboard.render.com/web/${{ secrets.RENDER_SERVICE_ID }}"
