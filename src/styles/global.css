@@ -27,7 +27,7 @@ body {
   flex: 1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-md);
+  padding: clamp(var(--spacing-md), 2.5vw, var(--spacing-xl)) var(--spacing-md);
   width: 100%;
 }
 
@@ -50,7 +50,7 @@ body {
   margin: 0 auto;
   padding: 0 var(--spacing-md);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--spacing-lg);
 }
@@ -1069,8 +1069,128 @@ body {
   font-size: var(--font-size-lg);
 }
 
+@media (max-width: 1024px) {
+  .main-content,
+  .header-content {
+    max-width: 960px;
+  }
+
+  .applications-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .card-header,
+  .card-body,
+  .recent-applications,
+  .chart-card,
+  .application-form {
+    padding: var(--spacing-md);
+  }
+}
+
 @media (max-width: 768px) {
+  .main-content {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+
+  .header {
+    padding: var(--spacing-md) 0;
+  }
+
   .charts-row {
     grid-template-columns: 1fr;
+  }
+
+  .header-content {
+    gap: var(--spacing-md);
+  }
+
+  .logo h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .tagline {
+    font-size: var(--font-size-md);
+  }
+
+  .header-auth {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-user-meta {
+    flex-direction: row;
+    gap: var(--spacing-sm);
+  }
+
+  .profile-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .application-card.expanded {
+    grid-column: auto;
+  }
+
+  .recent-item,
+  .card-header,
+  .card-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .recent-meta {
+    align-items: flex-start;
+  }
+
+  .list-actions,
+  .form-actions,
+  .modal-actions {
+    width: 100%;
+    justify-content: stretch;
+    flex-wrap: wrap;
+  }
+
+  .list-actions .btn,
+  .form-actions .btn,
+  .modal-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content h1 {
+    font-size: var(--font-size-xl);
+  }
+
+  .tagline {
+    font-size: var(--font-size-sm);
+  }
+
+  .stats-card {
+    padding: var(--spacing-md);
+  }
+
+  .status-editor-actions {
+    gap: 6px;
+  }
+
+  .status-chip {
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-content {
+    width: calc(100vw - (2 * var(--spacing-sm)));
+    padding: var(--spacing-md);
+  }
+
+  .side-menu {
+    width: 100vw;
+    right: -100vw;
+    border-left: none;
   }
 }
