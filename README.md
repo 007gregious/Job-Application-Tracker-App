@@ -5,7 +5,7 @@ JobTrackr is a full-stack-ready job search companion for tracking applications, 
 The current app experience includes:
 - A React frontend with local account/session handling.
 - LocalStorage-based application persistence for day-to-day usage.
-- An Express + PostgreSQL API layer (already scaffolded) for server-backed deployments.
+- An Express + PostgreSQL API layer for server-backed deployments.
 
 ---
 
@@ -113,7 +113,7 @@ npm run dev
 
 - **Frontend currently persists applications in LocalStorage** (`job_applications`).
 - **Auth data is also LocalStorage-based** (`jobtrackr_users`, `jobtrackr_current_user`).
-- An API service (`/api/applications`) and SQL schema are present for server-backed persistence workflows.
+- API routes and SQL schema are present for server-backed persistence workflows.
 
 This means you can run and use the app immediately without provisioning a database for core UI flows.
 
@@ -129,27 +129,7 @@ Base path: `/api`
 - `PUT /api/applications/:id` — update application
 - `DELETE /api/applications/:id` — delete application
 - `GET /api/stats/:userId` — aggregated status counts
-- `POST /api/applications/:id/packet` — save or update apply packet details (fit score, resume version, cover letter, answers, autofill URL)
-- `POST /api/jobs/import` — store imported job opportunities before application creation
-- `POST /api/applications/:id/ready` — move an application into the Ready-to-Apply queue (with readiness/duplicate checks)
-- `POST /api/applications/:id/queue` — move application through assisted auto-apply queue (`draft`, `ready`, `paused`, `submitted`)
-- `GET /api/queue?userId=<id>&status=ready` — fetch queue items by status
-- `POST /api/applications/:id/submitted` — confirm submission, apply guardrails, and mark queue status as `submitted`
 - `GET /health` — deployment health endpoint
-
----
-
-## 🤖 Assisted Auto-Apply Workflow (new)
-
-This project now includes a backend-ready, no-background-worker auto-apply flow designed for free-tier hosting:
-
-1. Create an application as usual.
-2. Save an **apply packet** (`/api/applications/:id/packet`) with resume version, cover letter, short-answer JSON, and rule-based fit/readiness scores.
-3. Move the application to queue status `ready` (`/api/applications/:id/ready` or `/api/applications/:id/queue`).
-4. Fetch queue items from `/api/queue?userId=<id>&status=ready` for extension/UI processing.
-5. After the user finishes an external form, confirm with `/api/applications/:id/submitted`.
-
-This keeps automation assistive and user-controlled while minimizing always-on server workloads.
 
 ---
 
