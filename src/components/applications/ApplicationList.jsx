@@ -10,7 +10,6 @@ const ApplicationList = () => {
   const { applications, deleteApplication } = useApplications();
   const [filters, setFilters] = useState({
     status: '',
-    queueStatus: '',
     dateRange: '',
     search: ''
   });
@@ -39,9 +38,6 @@ const ApplicationList = () => {
           app.position.toLowerCase().includes(searchLower)
         );
       }
-
-      if (filters.queueStatus && (app.queueStatus || 'draft') !== filters.queueStatus) return false;
-      
       return true;
     })
     .sort((a, b) => {

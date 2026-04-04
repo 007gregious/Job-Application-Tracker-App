@@ -1,6 +1,6 @@
 import React from 'react';
 import Input from '../common/Input';
-import { APPLICATION_STATUS, APPLY_QUEUE_STATUSES } from '../../utils/constants';
+import { APPLICATION_STATUS } from '../../utils/constants';
 
 const ApplicationFilters = ({ filters, setFilters }) => {
   return (
@@ -20,16 +20,6 @@ const ApplicationFilters = ({ filters, setFilters }) => {
         options={[
           { value: '', label: 'All Status' },
           ...APPLICATION_STATUS
-        ]}
-      />
-      <Input
-        type="select"
-        label="Apply Queue"
-        value={filters.queueStatus}
-        onChange={(e) => setFilters(prev => ({ ...prev, queueStatus: e.target.value }))}
-        options={[
-          { value: '', label: 'All Queues' },
-          ...APPLY_QUEUE_STATUSES
         ]}
       />
     </div>
