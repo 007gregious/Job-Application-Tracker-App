@@ -6,6 +6,7 @@ import ApplicationForm from './ApplicationForm';
 import Button from '../common/Button';
 import { useApplications } from '../../hooks/useApplications';
 import { STATUS_FLOW, TERMINAL_STATUSES } from '../../utils/constants';
+import { isSafeHttpUrl } from '../../services/validationService';
 
 const STATUS_PROGRESS = {
   Applied: 25,
@@ -143,7 +144,7 @@ const ApplicationCard = ({ application, onDelete }) => {
               {application.contactEmail && (
                 <p><strong>Email:</strong> {application.contactEmail}</p>
               )}
-              {application.jobUrl && (
+              {application.jobUrl && isSafeHttpUrl(application.jobUrl) && (
                 <p>
                   <strong>Job URL:</strong>
                   <a href={application.jobUrl} target="_blank" rel="noopener noreferrer">

@@ -1,3 +1,5 @@
+const SAFE_URL_PROTOCOLS = ['https:', 'http:'];
+
 export const validateApplication = (formData) => {
   const errors = {};
 
@@ -17,8 +19,8 @@ export const validateApplication = (formData) => {
     errors.contactEmail = 'Invalid email format';
   }
 
-  if (formData.jobUrl && !isValidUrl(formData.jobUrl)) {
-    errors.jobUrl = 'Invalid URL format';
+  if (formData.jobUrl && !isSafeHttpUrl(formData.jobUrl)) {
+    errors.jobUrl = 'Enter a valid HTTP or HTTPS URL';
   }
   if (formData.status === 'Rejected' && !formData.rejectionReason?.trim()) {
     errors.rejectionReason = 'Rejection reason is required for feedback tracking';
@@ -32,10 +34,9 @@ const isValidEmail = (email) => {
   return re.test(email);
 };
 
-const isValidUrl = (url) => {
+export const isSafeHttpUrl = (url) => {
   try {
-    new URL(url);
-    return true;
+    return SAFE_URL_PROTOCOLS.includes(new URL(url).protocol);
   } catch {
     return false;
   }

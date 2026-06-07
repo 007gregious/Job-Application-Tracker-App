@@ -3,9 +3,12 @@ import toast from 'react-hot-toast';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import { authService } from '../../services/authService';
+import { isSafeHttpUrl } from '../../services/validationService';
 
 const MAX_PHOTO_DIMENSION = 256;
 const PHOTO_QUALITY = 0.82;
+const MAX_PHOTO_SIZE_BYTES = 2 * 1024 * 1024;
+const ALLOWED_PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 const buildProfileState = (currentUser) => ({
   name: currentUser?.name || '',
@@ -72,8 +75,13 @@ const ProfilePage = ({ currentUser, onProfileUpdated }) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please upload an image file');
+    if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
+      toast.error('Please upload a JPEG, PNG, or WebP image');
+      return;
+    }
+
+    if (file.size > MAX_PHOTO_SIZE_BYTES) {
+      toast.error('Profile photos must be 2MB or smaller');
       return;
     }
 
@@ -103,6 +111,16 @@ const ProfilePage = ({ currentUser, onProfileUpdated }) => {
 
     if (!profileData.name.trim()) {
       toast.error('Name is required');
+      return;
+    }
+
+    if (profileData.linkedinUrl && !isSafeHttpUrl(profileData.linkedinUrl)) {
+      toast.error('LinkedIn URL must use HTTP or HTTPS');
+      return;
+    }
+
+    if (profileData.portfolioUrl && !isSafeHttpUrl(profileData.portfolioUrl)) {
+      toast.error('Portfolio URL must use HTTP or HTTPS');
       return;
     }
 
