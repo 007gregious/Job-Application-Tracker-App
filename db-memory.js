@@ -62,6 +62,11 @@ class MemoryDB {
       if (query.includes('where id = $1')) {
         const id = Number(params[0]);
         results = results.filter((app) => app.id === id);
+
+        if (query.includes('user_id = $2')) {
+          results = results.filter((app) => app.user_id === params[1]);
+        }
+
         return { rows: results };
       }
 
@@ -101,7 +106,10 @@ class MemoryDB {
     // UPDATE query
     if (query.includes('update applications set')) {
       const id = Number(params[0]);
-      const index = this.applications.findIndex((app) => app.id === id);
+      const userId = query.includes('user_id = $2') ? params[1] : null;
+      const index = this.applications.findIndex((app) => (
+        app.id === id && (!userId || app.user_id === userId)
+      ));
 
       if (index === -1) {
         return { rows: [] };
@@ -132,7 +140,10 @@ class MemoryDB {
     // DELETE query
     if (query.includes('delete from applications')) {
       const id = Number(params[0]);
-      const index = this.applications.findIndex((app) => app.id === id);
+      const userId = query.includes('user_id = $2') ? params[1] : null;
+      const index = this.applications.findIndex((app) => (
+        app.id === id && (!userId || app.user_id === userId)
+      ));
 
       if (index === -1) {
         return { rows: [] };

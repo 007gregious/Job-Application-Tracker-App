@@ -34,7 +34,7 @@ const AuthPage = ({ onAuthenticated }) => {
     return nextErrors;
   };
 
-  const handleSignIn = (event) => {
+  const handleSignIn = async (event) => {
     event.preventDefault();
 
     const nextErrors = {};
@@ -47,7 +47,7 @@ const AuthPage = ({ onAuthenticated }) => {
     }
 
     try {
-      const user = authService.signIn(signInData);
+      const user = await authService.signIn(signInData);
       toast.success(`Welcome back, ${user.name}!`);
       onAuthenticated(user);
     } catch (error) {
@@ -55,7 +55,7 @@ const AuthPage = ({ onAuthenticated }) => {
     }
   };
 
-  const handleSignUp = (event) => {
+  const handleSignUp = async (event) => {
     event.preventDefault();
     const nextErrors = validateSignUp();
 
@@ -65,7 +65,7 @@ const AuthPage = ({ onAuthenticated }) => {
     }
 
     try {
-      const user = authService.signUp(signUpData);
+      const user = await authService.signUp(signUpData);
       toast.success('Account created successfully!');
       onAuthenticated(user);
     } catch (error) {
