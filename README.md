@@ -3,6 +3,7 @@
 JobTrackr is a full-stack-ready job search companion for tracking applications, moving them through interview stages, and reviewing progress with analytics.
 
 The current app experience includes:
+
 - A React frontend with local account/session handling.
 - LocalStorage-based application persistence for day-to-day usage.
 - An Express + PostgreSQL API layer for server-backed deployments.
@@ -12,11 +13,13 @@ The current app experience includes:
 ## ✨ What’s in the App Now
 
 ### Authentication & user session
+
 - Sign up and sign in flows.
 - Session persistence in browser storage.
 - Signed-in header state with user name and sign out.
 
 ### Application management
+
 - Create, edit, and delete job applications.
 - Track rich details per application:
   - Company, role, location, salary, job type.
@@ -25,6 +28,7 @@ The current app experience includes:
 - Expandable application cards for quick view + detailed info.
 
 ### Status pipeline & progress
+
 - Supported statuses:
   - Applied
   - Interview
@@ -37,6 +41,7 @@ The current app experience includes:
 - Visual progress bar per application.
 
 ### Dashboard & analytics
+
 - Top-level stat cards (total, pending, interviews, rejected).
 - Recent applications preview.
 - Recharts-powered analytics:
@@ -45,6 +50,7 @@ The current app experience includes:
   - Pipeline conversion bar chart.
 
 ### Productivity features
+
 - Search and status filters in application list.
 - Date sorting toggle.
 - Excel export (`.xlsx`) of filtered applications.
@@ -55,6 +61,7 @@ The current app experience includes:
 ## 🧱 Tech Stack
 
 ### Frontend
+
 - React 18
 - React Hooks + Context API
 - Recharts
@@ -65,12 +72,14 @@ The current app experience includes:
 - uuid
 
 ### Backend (included in repository)
+
 - Node.js + Express
 - PostgreSQL (`pg`) for production mode
 - In-memory DB fallback for local API development
 - dotenv
 
 ### Deployment
+
 - Render blueprint included (`render.yaml`) with:
   - Web service config
   - PostgreSQL database config
